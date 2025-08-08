@@ -1,8 +1,11 @@
-import {Text, TouchableOpacity, View} from "react-native";
+import {ScrollView, Text, TouchableOpacity, View} from "react-native";
 
-import {Link} from "expo-router";
-import {styles} from "@/styles/auth.styles";
 import {useAuth} from "@clerk/clerk-expo";
+import {styles} from "@/styles/feed.styles";
+import {Ionicons} from "@expo/vector-icons";
+import {COLORS} from "@/constants/theme";
+import {STORIES} from "@/constants/mock-data";
+import Story from "@/components/story";
 
 export default function Index() {
 
@@ -12,11 +15,30 @@ export default function Index() {
     <View
       style={styles.container}
     >
-      <TouchableOpacity
-        onPress={() => signOut()}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>
+          spotlight
+        </Text>
+        <TouchableOpacity
+          onPress={() => signOut()}
+        >
+          <Ionicons name='log-out-outline' size={24} color={COLORS.white}/>
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
       >
-        <Text style={{ color: "white" }}>Sign Out</Text>
-      </TouchableOpacity>
+        <ScrollView
+            showsVerticalScrollIndicator={false}
+            horizontal
+            style={styles.storiesContainer}
+        >
+          {STORIES.map(story => (
+              <Story story={story} key={story.id}/>
+          ))}
+        </ScrollView>
+      </ScrollView>
     </View>
   );
 }
