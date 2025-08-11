@@ -6,10 +6,19 @@ import {Ionicons} from "@expo/vector-icons";
 import {COLORS} from "@/constants/theme";
 import {STORIES} from "@/constants/mock-data";
 import Story from "@/components/story";
+import {useQuery} from "convex/react";
+import {api} from "@/convex/_generated/api";
+import {Loader} from "@/components/Loader";
+import {Post} from "@/components/Post";
 
 export default function Index() {
 
-  const { signOut } = useAuth()
+    const { signOut } = useAuth();
+
+    const posts = useQuery(api.posts.getFeedPosts);
+
+    if (posts === undefined) return <Loader />;
+    if (posts.length === 0) return <NoPostsFound />;
 
   return (
     <View
@@ -27,10 +36,11 @@ export default function Index() {
       </View>
 
       <ScrollView
-        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 60 }}
       >
         <ScrollView
-            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
             horizontal
             style={styles.storiesContainer}
         >
@@ -38,9 +48,29 @@ export default function Index() {
               <Story story={story} key={story.id}/>
           ))}
         </ScrollView>
+
+          {posts.map((post) => (
+              <Post post={post} key={post._id}/>
+          ))}
+
       </ScrollView>
     </View>
   );
+}
+
+const NoPostsFound = () => {
+  return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: COLORS.background,
+          justifyContent: "center",
+          alignItems: "center"
+        }}
+      >
+        <Text style={{ fontSize: 20, color: COLORS.primary }}>No posts yet</Text>
+      </View>
+  )
 }
 
 
