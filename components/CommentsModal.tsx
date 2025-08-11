@@ -77,13 +77,14 @@ export default function CommentsModal({ onClose, onCommentAdded, postId, visible
                         onChangeText={setNewComment}
                         multiline
                     />
+                    <TouchableOpacity onPress={handleAddComment} disabled={!newComment.trim()}>
+                        <Text style={[styles.postButton, !newComment.trim() && styles.postButtonDisabled]}>
+                            Post
+                        </Text>
+                    </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity onPress={handleAddComment} disabled={!newComment.trim()}>
-                    <Text style={[styles.postButton, !newComment.trim() && styles.postButtonDisabled]}>
-                        Post
-                    </Text>
-                </TouchableOpacity>
+
             </KeyboardAvoidingView>
         </Modal>
     )
