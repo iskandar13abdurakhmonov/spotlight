@@ -9,6 +9,7 @@ import {useState} from "react";
 import {useMutation} from "convex/react";
 import {api} from "@/convex/_generated/api";
 import CommentsModal from "@/components/CommentsModal";
+import {formatDistanceToNow} from "date-fns/formatDistanceToNow";
 
 type PostProps = {
     post: {
@@ -91,7 +92,7 @@ export function Post({ post }: PostProps) {
                             color={isLiked ? COLORS.primary : COLORS.white}
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => setShowComments(true)}>
                         <Ionicons name="chatbubble-outline" size={24} color={COLORS.white}/>
                     </TouchableOpacity>
                 </View>
@@ -109,17 +110,20 @@ export function Post({ post }: PostProps) {
                     </View>
                 )}
 
-                <TouchableOpacity>
-                    <Text style={styles.commentsText}>View all 2 comments</Text>
+                <TouchableOpacity onPress={() => setShowComments(true)}>
+                    <Text style={styles.commentsText}>View all {commentsCount} comments</Text>
                 </TouchableOpacity>
 
-                <Text style={styles.timeAgo}>2 hours ago</Text>
+                <Text style={styles.timeAgo}>
+                    {formatDistanceToNow(post._creationTime, { addSuffix: true })}
+                </Text>
             </View>
 
             <CommentsModal
                 postId={post._id}
                 visible={showComments}
-                onClose={() => setCommentsCount((prev) => prev + 1)}
+                onClose={() => setShowComments(false)}
+                onCommentAdded={() => setCommentsCount((prev) => prev + 1)}
             />
         </View>
     )
