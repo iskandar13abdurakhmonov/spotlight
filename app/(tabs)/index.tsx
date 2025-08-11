@@ -1,11 +1,11 @@
-import {ScrollView, Text, TouchableOpacity, View} from "react-native";
+import {FlatList, ScrollView, Text, TouchableOpacity, View} from "react-native";
 
 import {useAuth} from "@clerk/clerk-expo";
 import {styles} from "@/styles/feed.styles";
 import {Ionicons} from "@expo/vector-icons";
 import {COLORS} from "@/constants/theme";
 import {STORIES} from "@/constants/mock-data";
-import Story from "@/components/story";
+import Story from "@/components/Story";
 import {useQuery} from "convex/react";
 import {api} from "@/convex/_generated/api";
 import {Loader} from "@/components/Loader";
@@ -35,27 +35,51 @@ export default function Index() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 60 }}
-      >
-        <ScrollView
-            showsHorizontalScrollIndicator={false}
-            horizontal
-            style={styles.storiesContainer}
-        >
-          {STORIES.map(story => (
-              <Story story={story} key={story.id}/>
-          ))}
-        </ScrollView>
+        <FlatList
+            data={posts}
+            renderItem={({ item }) => <Post post={item} />}
+            keyExtractor={(item) => item._id}
+            showsVerticalScrollIndicator={false}
+            ListHeaderComponent={<StoriesSection/>}
+            contentContainerStyle={{ paddingBottom: 60 }}
+        />
 
-          {posts.map((post) => (
-              <Post post={post} key={post._id}/>
-          ))}
 
-      </ScrollView>
+        {/*<ScrollView*/}
+      {/*  showsVerticalScrollIndicator={false}*/}
+      {/*  contentContainerStyle={{ paddingBottom: 60 }}*/}
+      {/*>*/}
+      {/*  <ScrollView*/}
+      {/*      showsHorizontalScrollIndicator={false}*/}
+      {/*      horizontal*/}
+      {/*      style={styles.storiesContainer}*/}
+      {/*  >*/}
+      {/*    {STORIES.map(story => (*/}
+      {/*        <Story story={story} key={story.id}/>*/}
+      {/*    ))}*/}
+      {/*  </ScrollView>*/}
+
+      {/*    {posts.map((post) => (*/}
+      {/*        <Post post={post} key={post._id}/>*/}
+      {/*    ))}*/}
+
+      {/*</ScrollView>*/}
     </View>
   );
+}
+
+const StoriesSection = () => {
+    return (
+        <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.storiesContainer}
+        >
+            {STORIES.map((story) => (
+                <Story story={story} key={story.id}/>
+            ))}
+        </ScrollView>
+    )
 }
 
 const NoPostsFound = () => {
