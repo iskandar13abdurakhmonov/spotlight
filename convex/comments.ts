@@ -1,4 +1,4 @@
-import {mutation} from "@/convex/_generated/server";
+import {mutation, query} from "@/convex/_generated/server";
 import {ConvexError, v} from "convex/values"
 import {getAuthenticatedUser} from "@/convex/users";
 
@@ -27,10 +27,34 @@ export const addComment = mutation({
                 senderId: currentUser._id,
                 type: "comment",
                 postId: args.postId,
-                commentId: commentId,
             })
         }
 
         return commentId
+    }
+})
+
+export const getComments = query({
+    args: { postId: v.id("posts") },
+    handler: async (ctx, args) => {
+        const comments = await ctx.db
+            .query("comments")
+            .withIndex("by_post", q => q.eq("postId", args.postId))
+            .collect()
+
+        const commentsWithInfo = await Promise.all(
+            comments.map(async (comment) => {
+                const user = await ctx.db.get(comment.userId)
+                return {
+                    ...comment,
+                    user: {
+                        fullname: user!.fullname,
+                        image: user!.image
+                    },
+                }
+            })
+        )
+
+        return commentsWithInfo
     }
 })

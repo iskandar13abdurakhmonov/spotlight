@@ -8,6 +8,7 @@ import {Id} from "@/convex/_generated/dataModel";
 import {useState} from "react";
 import {useMutation} from "convex/react";
 import {api} from "@/convex/_generated/api";
+import CommentsModal from "@/components/CommentsModal";
 
 type PostProps = {
     post: {
@@ -31,6 +32,8 @@ export function Post({ post }: PostProps) {
 
     const [isLiked, setIsLiked] = useState(post.isLiked)
     const [likesCount, setLikesCount] = useState(post.likes)
+    const [commentsCount, setCommentsCount] = useState(post.comments)
+    const [showComments, setShowComments] = useState(false)
 
     const toggleLike = useMutation(api.posts.toggleLike)
 
@@ -112,6 +115,12 @@ export function Post({ post }: PostProps) {
 
                 <Text style={styles.timeAgo}>2 hours ago</Text>
             </View>
+
+            <CommentsModal
+                postId={post._id}
+                visible={showComments}
+                onClose={() => setCommentsCount((prev) => prev + 1)}
+            />
         </View>
     )
 }
