@@ -14,6 +14,7 @@ export const styles = StyleSheet.create({
         alignItems: "center",
         paddingHorizontal: 16,
         paddingVertical: 12,
+        paddingTop: 60,
         borderBottomWidth: 1,
         borderBottomColor: COLORS.surface,
     },
